@@ -133,7 +133,6 @@
                         <div className="text-green-500 text-6xl flex justify-center italic">✓</div>
                         <h1 className="text-3xl font-black text-slate-800">הרישום נשלח!</h1>
                         <p className="text-slate-600 text-lg font-bold">{form.studentName}, בחירתך נשמרה בגיליון.</p>
-                        <button onClick={() => window.location.reload()} className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-colors">ביצוע רישום נוסף</button>
                     </div>
                 </div>
             );
@@ -250,7 +249,7 @@
                             {submitting ? 'שולח נתונים...' : 'אישור ושליחת הרשמה'}
                         </button>
                         
-                        <p className="text-center text-slate-400 text-xs">המערכת בודקת כפילויות מול קובץ הרישום של המזכירות</p>
+                        <p className="text-center text-slate-400 text-xs">המערכת בודקת כפילויות מול קובץ הרישום  </p>
 
                     </div>
                 </div>
@@ -261,4 +260,5 @@
         root.render(<App />);
     </script>
 </body>
+
 </html>
