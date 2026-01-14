@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>רישום חוגים שכבת ז'</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700;800&display=swap');
+        body { font-family: 'Assistant', sans-serif; }
+    </style>
+</head>
+<body class="bg-indigo-50/50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Configuration
+        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-qQWgyIEmfWmP8_COXJl5EZh5J8e76gbDASn-3QTNhhTjxHcKiTnS2sGp1ig2t-Xh/exec";
+
+        const CLUBS = [
+            "ספורט ימי",
+            "טניס שולחן",
+            "התעמלות קרקע",
+            "בישול קולינרי",
+            "נפלאות הקנבה",
+            "השרדות",
+            "תאטרון/קולנוע"
+        ];
+
+        const STUDENTS_BY_CLASS = {
+            "ז'2": ["אדל אוחיון", "אדל אילוז", "איתי אדרי", "איתי חלפון", "אליאנה סבג", "אלירן אילוז", "אריאל דדון", "אריאל סוויסה", "בתאל מור יוסף", "דניאל שוקרון", "הודיה ועקנין", "טוהר אזולאי", "יהונתן חזן", "ליאל גואטה", "ליאור חזיזה", "מאור מויאל", "מנור אדרי", "נהוראי בן חמו", "נועם יפרח", "עומר איפרגן", "עילי בן חמו", "רפאל זריהן", "שגיב בן שימול", "שקד סרור", "תהל ברוך"],
+            "ז'3": ["אביגיל חזיזה", "אביחי אלוש", "אוהד פרץ", "אורי אזולאי", "אורי כהן", "אוריין אדרי", "איילה אברג'ל", "איתן כהן", "איתן ממן", "אלעאי סבג", "אריאל דהן", "אריאל פחימה", "הלל סבג", "טוהר עמר", "יהונתן מלכה", "יהלי איפרגן", "ליאל שטרית", "מאור שושן", "נהוראי בן חמו", "נועם מרציאנו", "נהוראי קריספין", "עילאי בוזגלו", "רומי אילוז", "רומי מלכה", "שירה מלול"],
+            "ז'4": ["אוהד עמר", "אוראל דהן", "אורי כהן", "אורי שושן", "איתי מור יוסף", "אלעד ממן", "אליה אוחנה", "אריאל זגורי", "דוד כהן", "דניאל פחימה", "דניאל קדוש", "הלל ביטון", "טוהר אילוז", "טוהר ממן", "יהלי פרץ", "ליאם אזולאי", "ליהיא חזיזה", "לירוי אוחיון", "מאור בן חמו", "מיאל חלפון", "נהוראי מויאל", "נועם אדרי", "נועם בן חמו", "נועם כהן", "נועם מלכה", "נועם סבג", "עילאי גואטה", "עילאי סרוסי", "עמית כהן", "רונה אדרי", "רועי חזן", "רפאל אבוטבול", "שביט אדרי", "שי סויסה", "שליו מור יוסף", "תהל אוחיון"],
+            "ז'5": ["אבישג שושן", "אדל אוחיון", "אדל גואטה", "אדל מלול", "אוהב איפרגן", "אוריין אדרי", "אוריין סבג", "איילה טובול", "איתן דדון", "אליה חזן", "אלמוג אדרי", "אלעאי בן חמו", "אריאל עמר", "הדר בן חמו", "טוהר פרץ", "יאיר אדרי", "יהלי מויאל", "יונתן בן שימול", "ליאם ביטון", "ליאן ממן", "ליאל מלכה", "מאור ועקנין", "מאור מלכה", "נהוראי אוחנה", "נהוראי דהן", "נוי דהן", "נועה בן שימול", "עילי אילוז", "עמית ממן", "רומי זגורי", "שון חזיזה", "שחר כהן", "שילה כהן", "תהילה זריהן"],
+            "ז'8": ["אביב אדרי", "אביגיל סבג", "אדל סבג", "אורין קקון", "איתי גואטה", "איתי מויאל", "אליה אלוש", "אליה ועקנין", "אלעאי אילוז", "אריאל איפרגן", "אריאל ביטון", "אריאל מור יוסף", "דניאל אילוז", "דניאל חלפון", "הדר בן שימול", "טוהר דדון", "יהונתן שוקרון", "ירין אבוטבול", "ליאור מלכה", "ליאל אוחיון", "ליאם אוחיון", "ליהיא אדרי", "לירז שושן", "מאור סויסה", "מיאל זריהן", "נהוראי שושן", "נועם אדרי", "נועם אילוז", "נועם שושן", "עילאי בן חמו", "עילי מלכה", "עמית זגורי", "עמית מלכה", "רועי ועקנין", "ריף ביטון", "רפאל mמן", "תהל חזיזה"],
+            "ז'9": ["אביאל חזיזה", "אביתר אדרי", "אדל אילוז", "אדל מור יוסף", "אורי מלכה", "אורין בן חמו", "אורין ממן", "אוראל אלוש", "איתן ביטון", "איתן ועקנין", "איתן מלכה", "אליה אדרי", "אליה פרץ", "אלין אוחיון", "אלמוג גואטה", "אריאל אוחיון", "אריאל סבג", "הלל מלכה", "טוהר אילוז", "טוהר ביטון", "יהלי דדון", "יוסף חיים חזן", "ליאל דהן", "ליה אברג'ל", "לירוי ועקנין", "לירן ממן", "מאור אוחנה", "נהוראי גואטה", "נויה דהן", "נועם חלפון", "עומר כהן", "עילי אדרי", "עמית כהן", "רון חזיזה", "שקד בן חמו", "תהל אדרי", "תהל מויאל"],
+            "ז'10": ["אביאל מלכה", "אדל ביטון", "אדיר ממן", "אורי זריהן", "אוריאל סבג", "איתמר אדרי", "אליה דדון", "אלין חלפון", "אלעד מויאל", "אריאל דהן", "הלל אוחיון", "יהלי כהן", "יונתן חזן", "ליאם אוחנה", "ליאל אילוז", "לירן מרציאנו", "מאור ועקנין", "נהוראי סוויסה", "נועם אלוש", "עומר כהן", "עמית מלכה", "רפאל דהן", "שילה חזיזה", "תהילה ועקנין"]
+        };
+
+        const CLASSES = Object.keys(STUDENTS_BY_CLASS);
+
+        function App() {
+            const [loading, setLoading] = useState(true);
+            const [registeredStudents, setRegisteredStudents] = useState([]);
+            const [submitting, setSubmitting] = useState(false);
+            const [success, setSuccess] = useState(false);
+            const [error, setError] = useState("");
+            const [form, setForm] = useState({
+                className: "",
+                studentName: "",
+                choice1: "",
+                choice2: ""
+            });
+
+            const fetchRegistered = async () => {
+                try {
+                    setLoading(true);
+                    const res = await fetch(GOOGLE_SHEET_SCRIPT_URL);
+                    const data = await res.json();
+                    setRegisteredStudents(data);
+                } catch (err) {
+                    console.error("Error fetching data:", err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            useEffect(() => {
+                fetchRegistered();
+            }, []);
+
+            const isNameTaken = (name, className) => {
+                return registeredStudents.some(s => s.name === name && s.className === className);
+            };
+
+            const submitForm = async () => {
+                if (!form.className || !form.studentName || !form.choice1 || !form.choice2) {
+                    setError("יש למלא את כל השדות");
+                    return;
+                }
+                if (form.choice1 === form.choice2) {
+                    setError("חובה לבחור שני חוגים שונים");
+                    return;
+                }
+                if (isNameTaken(form.studentName, form.className)) {
+                    setError("תלמיד זה כבר נרשם במערכת");
+                    return;
+                }
+
+                setSubmitting(true);
+                setError("");
+
+                try {
+                    await fetch(GOOGLE_SHEET_SCRIPT_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            ...form,
+                            timestamp: new Date().toLocaleString('he-IL')
+                        }),
+                    });
+                    setSuccess(true);
+                } catch (err) {
+                    setError("שגיאה בשמירת הנתונים");
+                } finally {
+                    setSubmitting(false);
+                }
+            };
+
+            if (loading) return (
+                <div className="flex h-screen items-center justify-center bg-indigo-50" dir="rtl">
+                    <div className="text-center space-y-4">
+                        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        <p className="text-indigo-800 font-bold text-xl">בודק רישומים קיימים...</p>
+                    </div>
+                </div>
+            );
+
+            if (success) return (
+                <div className="min-h-screen flex items-center justify-center bg-green-50 p-6 text-right" dir="rtl">
+                    <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6 border-b-8 border-green-500">
+                        <div className="text-green-500 text-6xl flex justify-center italic">✓</div>
+                        <h1 className="text-3xl font-black text-slate-800">הרישום נשלח!</h1>
+                        <p className="text-slate-600 text-lg font-bold">{form.studentName}, בחירתך נשמרה בגיליון.</p>
+                        <button onClick={() => window.location.reload()} className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-colors">ביצוע רישום נוסף</button>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen py-10 px-4 text-right" dir="rtl">
+                    <div className="max-w-xl mx-auto space-y-6">
+                        
+                        <div className="bg-white rounded-2xl shadow-sm border-t-8 border-indigo-600 p-8 flex justify-between items-center">
+                            <div>
+                                <h1 className="text-3xl font-black text-slate-800 mb-2">רישום חוגים - שכבת ז'</h1>
+                                <p className="text-slate-500 font-bold">מחצית ב' - שנת הלימודים תשפ"ו</p>
+                            </div>
+                            <button onClick={fetchRegistered} className="p-2 text-indigo-400 hover:text-indigo-600 transition-colors" title="רענן נתונים">
+                                ↻
+                            </button>
+                        </div>
+
+                        {/* Identity */}
+                        <div className="bg-white rounded-2xl shadow-sm p-8 space-y-6 border-r-4 border-blue-500">
+                            <div className="flex items-center gap-2 text-indigo-600 font-bold border-b pb-2">
+                                <span>🎓 פרטי התלמיד/ה</span>
+                            </div>
+
+                            <div className="space-y-4">
+                                <select 
+                                    className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 transition-all font-bold"
+                                    value={form.className}
+                                    onChange={(e) => setForm({className: e.target.value, studentName: "", choice1: "", choice2: ""})}
+                                >
+                                    <option value="">-- בחר/י כיתה --</option>
+                                    {CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+
+                                {form.className && (
+                                    <select 
+                                        className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 transition-all font-bold"
+                                        value={form.studentName}
+                                        onChange={(e) => setForm({...form, studentName: e.target.value})}
+                                    >
+                                        <option value="">-- בחר/י שם מהרשימה --</option>
+                                        {STUDENTS_BY_CLASS[form.className].map(name => {
+                                            const taken = isNameTaken(name, form.className);
+                                            return (
+                                                <option key={name} value={name} disabled={taken}>
+                                                    {name} {taken ? '(כבר נרשם/ה)' : ''}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Choices */}
+                        <div className={`bg-white rounded-2xl shadow-sm p-8 space-y-6 transition-all ${!form.studentName ? 'opacity-40 pointer-events-none' : 'border-r-4 border-orange-500'}`}>
+                            <div className="flex items-center gap-2 text-orange-600 font-bold border-b pb-2">
+                                <span>📋 בחירת עדיפויות</span>
+                            </div>
+
+                            <div className="space-y-8">
+                                <div>
+                                    <p className="text-sm font-bold text-slate-700 mb-3">בחירה ראשונה:</p>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                        {CLUBS.map(club => (
+                                            <button
+                                                key={club}
+                                                onClick={() => setForm({...form, choice1: club})}
+                                                className={`px-4 py-3 rounded-xl border-2 transition-all font-bold text-sm ${form.choice1 === club ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300'}`}
+                                            >
+                                                {club}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <p className="text-sm font-bold text-slate-700 mb-3">בחירה שנייה:</p>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                        {CLUBS.map(club => (
+                                            <button
+                                                key={club}
+                                                disabled={club === form.choice1}
+                                                onClick={() => setForm({...form, choice2: club})}
+                                                className={`px-4 py-3 rounded-xl border-2 transition-all font-bold text-sm ${
+                                                    form.choice2 === club 
+                                                    ? 'bg-orange-500 border-orange-500 text-white shadow-md' 
+                                                    : club === form.choice1 
+                                                        ? 'bg-slate-100 text-slate-300' 
+                                                        : 'bg-white border-slate-100 text-slate-600 hover:border-orange-200'
+                                                }`}
+                                            >
+                                                {club}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {error && (
+                            <div className="bg-red-50 border-r-4 border-red-500 p-4 text-red-700 flex items-center gap-2 rounded-xl">
+                                <span className="font-bold">⚠️ {error}</span>
+                            </div>
+                        )}
+
+                        <button
+                            onClick={submitForm}
+                            disabled={submitting || !form.choice2}
+                            className={`w-full py-6 rounded-2xl text-2xl font-black text-white shadow-xl transition-all ${
+                                submitting || !form.choice2 ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'
+                            }`}
+                        >
+                            {submitting ? 'שולח נתונים...' : 'אישור ושליחת הרשמה'}
+                        </button>
+                        
+                        <p className="text-center text-slate-400 text-xs">המערכת בודקת כפילויות מול קובץ הרישום של המזכירות</p>
+
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
