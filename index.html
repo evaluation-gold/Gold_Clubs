@@ -3,38 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>רישום חוגים שכבת ז'</title>
-    <!-- Tailwind CSS for styling -->
+    <title>בחירת קורסים - מחצית ב'</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React and ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel for JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700;800&display=swap');
-        body { font-family: 'Assistant', sans-serif; }
+        body { 
+            font-family: 'Assistant', sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
+        /* הגדרת תמונת הרקע שהועלתה */
+        .bg-custom-image {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                              url('gold4.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
     </style>
 </head>
-<body class="bg-indigo-50/50">
+<body>
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
         
-        // Configuration
         const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-qQWgyIEmfWmP8_COXJl5EZh5J8e76gbDASn-3QTNhhTjxHcKiTnS2sGp1ig2t-Xh/exec";
 
-        const CLUBS = [
-            "ספורט ימי",
-            "טניס שולחן",
-            "התעמלות קרקע",
-            "בישול קולינרי",
-            "נפלאות הקנבה",
-            "השרדות",
-            "תאטרון/קולנוע"
+        const CLUBS_CONFIG = [
+            { name: "ספורט ימי", limit: 55 },
+            { name: "טניס שולחן", limit: 21 },
+            { name: "התעמלות קרקע", limit: 21 },
+            { name: "בישול קולינרי", limit: 21 },
+            { name: "נפלאות הקנבה", limit: 21 },
+            { name: "השרדות", limit: 21 },
+            { name: "תאטרון/קולנוע", limit: 21 }
         ];
 
         const STUDENTS_BY_CLASS = {
@@ -42,58 +49,60 @@
             "ז'3": ["אביגיל חזיזה", "אביחי אלוש", "אוהד פרץ", "אורי אזולאי", "אורי כהן", "אוריין אדרי", "איילה אברג'ל", "איתן כהן", "איתן ממן", "אלעאי סבג", "אריאל דהן", "אריאל פחימה", "הלל סבג", "טוהר עמר", "יהונתן מלכה", "יהלי איפרגן", "ליאל שטרית", "מאור שושן", "נהוראי בן חמו", "נועם מרציאנו", "נהוראי קריספין", "עילאי בוזגלו", "רומי אילוז", "רומי מלכה", "שירה מלול"],
             "ז'4": ["אוהד עמר", "אוראל דהן", "אורי כהן", "אורי שושן", "איתי מור יוסף", "אלעד ממן", "אליה אוחנה", "אריאל זגורי", "דוד כהן", "דניאל פחימה", "דניאל קדוש", "הלל ביטון", "טוהר אילוז", "טוהר ממן", "יהלי פרץ", "ליאם אזולאי", "ליהיא חזיזה", "לירוי אוחיון", "מאור בן חמו", "מיאל חלפון", "נהוראי מויאל", "נועם אדרי", "נועם בן חמו", "נועם כהן", "נועם מלכה", "נועם סבג", "עילאי גואטה", "עילאי סרוסי", "עמית כהן", "רונה אדרי", "רועי חזן", "רפאל אבוטבול", "שביט אדרי", "שי סויסה", "שליו מור יוסף", "תהל אוחיון"],
             "ז'5": ["אבישג שושן", "אדל אוחיון", "אדל גואטה", "אדל מלול", "אוהב איפרגן", "אוריין אדרי", "אוריין סבג", "איילה טובול", "איתן דדון", "אליה חזן", "אלמוג אדרי", "אלעאי בן חמו", "אריאל עמר", "הדר בן חמו", "טוהר פרץ", "יאיר אדרי", "יהלי מויאל", "יונתן בן שימול", "ליאם ביטון", "ליאן ממן", "ליאל מלכה", "מאור ועקנין", "מאור מלכה", "נהוראי אוחנה", "נהוראי דהן", "נוי דהן", "נועה בן שימול", "עילי אילוז", "עמית ממן", "רומי זגורי", "שון חזיזה", "שחר כהן", "שילה כהן", "תהילה זריהן"],
-            "ז'8": ["אביב אדרי", "אביגיל סבג", "אדל סבג", "אורין קקון", "איתי גואטה", "איתי מויאל", "אליה אלוש", "אליה ועקנין", "אלעאי אילוז", "אריאל איפרגן", "אריאל ביטון", "אריאל מור יוסף", "דניאל אילוז", "דניאל חלפון", "הדר בן שימול", "טוהר דדון", "יהונתן שוקרון", "ירין אבוטבול", "ליאור מלכה", "ליאל אוחיון", "ליאם אוחיון", "ליהיא אדרי", "לירז שושן", "מאור סויסה", "מיאל זריהן", "נהוראי שושן", "נועם אדרי", "נועם אילוז", "נועם שושן", "עילאי בן חמו", "עילי מלכה", "עמית זגורי", "עמית מלכה", "רועי ועקנין", "ריף ביטון", "רפאל mמן", "תהל חזיזה"],
+            "ז'8": ["אביב אדרי", "אביגיל סבג", "אדל סבג", "אורין קקון", "איתי גואטה", "איתי מויאל", "אליה אלוש", "אליה ועקנין", "אלעאי אילוז", "אריאל איפרגן", "אריאל ביטון", "אריאל מור יוסף", "דניאל אילוז", "דניאל חלפון", "הדר בן שימול", "טוהר דדון", "יהונתן שוקרון", "ירין אבוטבול", "ליאור מלכה", "ליאל אוחיון", "ליאם אוחיון", "ליהיא אדרי", "לירז שושן", "מאור סויסה", "מיאל זריהן", "נהוראי שושן", "נועם אדרי", "נועם אילוז", "נועם שושן", "עילאי בן חמו", "עילי מלכה", "עמית זגורי", "עמית מלכה", "רועי ועקנין", "ריף ביטון", "רפאל ממן", "תהל חזיזה"],
             "ז'9": ["אביאל חזיזה", "אביתר אדרי", "אדל אילוז", "אדל מור יוסף", "אורי מלכה", "אורין בן חמו", "אורין ממן", "אוראל אלוש", "איתן ביטון", "איתן ועקנין", "איתן מלכה", "אליה אדרי", "אליה פרץ", "אלין אוחיון", "אלמוג גואטה", "אריאל אוחיון", "אריאל סבג", "הלל מלכה", "טוהר אילוז", "טוהר ביטון", "יהלי דדון", "יוסף חיים חזן", "ליאל דהן", "ליה אברג'ל", "לירוי ועקנין", "לירן ממן", "מאור אוחנה", "נהוראי גואטה", "נויה דהן", "נועם חלפון", "עומר כהן", "עילי אדרי", "עמית כהן", "רון חזיזה", "שקד בן חמו", "תהל אדרי", "תהל מויאל"],
             "ז'10": ["אביאל מלכה", "אדל ביטון", "אדיר ממן", "אורי זריהן", "אוריאל סבג", "איתמר אדרי", "אליה דדון", "אלין חלפון", "אלעד מויאל", "אריאל דהן", "הלל אוחיון", "יהלי כהן", "יונתן חזן", "ליאם אוחנה", "ליאל אילוז", "לירן מרציאנו", "מאור ועקנין", "נהוראי סוויסה", "נועם אלוש", "עומר כהן", "עמית מלכה", "רפאל דהן", "שילה חזיזה", "תהילה ועקנין"]
         };
 
-        const CLASSES = Object.keys(STUDENTS_BY_CLASS);
-
         function App() {
             const [loading, setLoading] = useState(true);
-            const [registeredStudents, setRegisteredStudents] = useState([]);
+            const [registeredData, setRegisteredData] = useState([]);
+            const [clubStats, setClubStats] = useState({});
             const [submitting, setSubmitting] = useState(false);
             const [success, setSuccess] = useState(false);
             const [error, setError] = useState("");
-            const [form, setForm] = useState({
-                className: "",
-                studentName: "",
-                choice1: "",
-                choice2: ""
-            });
+            const [form, setForm] = useState({ className: "", studentName: "", choice1: "", choice2: "" });
 
-            const fetchRegistered = async () => {
+            const fetchData = async () => {
                 try {
                     setLoading(true);
                     const res = await fetch(GOOGLE_SHEET_SCRIPT_URL);
                     const data = await res.json();
-                    setRegisteredStudents(data);
+                    setRegisteredData(data);
+                    
+                    const stats = {};
+                    CLUBS_CONFIG.forEach(c => stats[c.name] = 0);
+                    data.forEach(entry => {
+                        if (entry.choice1 && stats[entry.choice1] !== undefined) {
+                            stats[entry.choice1]++;
+                        }
+                    });
+                    setClubStats(stats);
                 } catch (err) {
-                    console.error("Error fetching data:", err);
+                    console.error("Fetch error:", err);
                 } finally {
                     setLoading(false);
                 }
             };
 
-            useEffect(() => {
-                fetchRegistered();
-            }, []);
+            useEffect(() => { fetchData(); }, []);
 
             const isNameTaken = (name, className) => {
-                return registeredStudents.some(s => s.name === name && s.className === className);
+                return registeredData.some(s => s.name === name && s.className === className);
+            };
+
+            const getClubStatus = (clubName) => {
+                const config = CLUBS_CONFIG.find(c => c.name === clubName);
+                const count = clubStats[clubName] || 0;
+                const isFull = count >= config.limit;
+                return { count, limit: config.limit, isFull };
             };
 
             const submitForm = async () => {
-                if (!form.className || !form.studentName || !form.choice1 || !form.choice2) {
-                    setError("יש למלא את כל השדות");
-                    return;
-                }
-                if (form.choice1 === form.choice2) {
-                    setError("חובה לבחור שני חוגים שונים");
-                    return;
-                }
-                if (isNameTaken(form.studentName, form.className)) {
-                    setError("תלמיד זה כבר נרשם במערכת");
+                const status1 = getClubStatus(form.choice1);
+                if (status1.isFull) {
+                    setError(`מצטערים, החוג ${form.choice1} התמלא.`);
+                    fetchData();
                     return;
                 }
 
@@ -104,128 +113,121 @@
                     await fetch(GOOGLE_SHEET_SCRIPT_URL, {
                         method: "POST",
                         mode: "no-cors",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            ...form,
-                            timestamp: new Date().toLocaleString('he-IL')
-                        }),
+                        body: JSON.stringify({ ...form, timestamp: new Date().toLocaleString('he-IL') }),
                     });
                     setSuccess(true);
                 } catch (err) {
-                    setError("שגיאה בשמירת הנתונים");
+                    setError("שגיאה בחיבור לשרת");
                 } finally {
                     setSubmitting(false);
                 }
             };
 
             if (loading) return (
-                <div className="flex h-screen items-center justify-center bg-indigo-50" dir="rtl">
+                <div className="flex h-screen items-center justify-center bg-white/80" dir="rtl">
                     <div className="text-center space-y-4">
-                        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p className="text-indigo-800 font-bold text-xl">בודק רישומים קיימים...</p>
+                        <div className="w-12 h-12 border-4 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        <p className="text-amber-900 font-bold italic">מעדכן מכסות קורסים...</p>
                     </div>
                 </div>
             );
 
             if (success) return (
-                <div className="min-h-screen flex items-center justify-center bg-green-50 p-6 text-right" dir="rtl">
-                    <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6 border-b-8 border-green-500">
-                        <div className="text-green-500 text-6xl flex justify-center italic">✓</div>
-                        <h1 className="text-3xl font-black text-slate-800">הרישום נשלח!</h1>
-                        <p className="text-slate-600 text-lg font-bold">{form.studentName}, בחירתך נשמרה בגיליון.</p>
+                <div className="min-h-screen flex items-center justify-center p-6 bg-custom-image" dir="rtl">
+                    <div className="bg-white/95 backdrop-blur-md p-10 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6 border-b-8 border-green-600">
+                        <div className="text-green-600 text-6xl">✓</div>
+                        <h1 className="text-3xl font-black text-slate-800">הרישום בוצע!</h1>
+                        <p className="text-slate-600 text-lg font-bold italic">תודה {form.studentName}, בחירותייך נקלטו במערכת.</p>
                     </div>
                 </div>
             );
 
             return (
-                <div className="min-h-screen py-10 px-4 text-right" dir="rtl">
-                    <div className="max-w-xl mx-auto space-y-6">
+                <div className="bg-custom-image py-10 px-4 text-right" dir="rtl">
+                    <div className="max-w-xl mx-auto space-y-6 relative z-10">
                         
-                        <div className="bg-white rounded-2xl shadow-sm border-t-8 border-indigo-600 p-8 flex justify-between items-center">
-                            <div>
-                                <h1 className="text-3xl font-black text-slate-800 mb-2">רישום חוגים - שכבת ז'</h1>
-                                <p className="text-slate-500 font-bold">מחצית ב' - שנת הלימודים תשפ"ו</p>
-                            </div>
-                            <button onClick={fetchRegistered} className="p-2 text-indigo-400 hover:text-indigo-600 transition-colors" title="רענן נתונים">
-                                ↻
-                            </button>
+                        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border-t-8 border-amber-600 p-8">
+                            <h1 className="text-3xl font-black text-slate-800 mb-2">בחירת קורסים - מחצית ב'</h1>
+                            <p className="text-amber-700 font-bold italic">שכבת ז' - נא למלא את עדיפויותייך</p>
                         </div>
 
-                        {/* Identity */}
-                        <div className="bg-white rounded-2xl shadow-sm p-8 space-y-6 border-r-4 border-blue-500">
-                            <div className="flex items-center gap-2 text-indigo-600 font-bold border-b pb-2">
-                                <span>🎓 פרטי התלמיד/ה</span>
-                            </div>
+                        {/* Student Selection */}
+                        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 space-y-6 border-r-4 border-amber-500">
+                            <p className="font-bold text-slate-700">🎓 פרטים אישיים:</p>
+                            <select 
+                                className="w-full p-4 bg-white/70 border-2 border-slate-200 rounded-xl outline-none focus:border-amber-500 font-bold transition-all"
+                                value={form.className}
+                                onChange={(e) => setForm({className: e.target.value, studentName: "", choice1: "", choice2: ""})}
+                            >
+                                <option value="">-- בחר/י כיתה --</option>
+                                {Object.keys(STUDENTS_BY_CLASS).map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
 
-                            <div className="space-y-4">
+                            {form.className && (
                                 <select 
-                                    className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 transition-all font-bold"
-                                    value={form.className}
-                                    onChange={(e) => setForm({className: e.target.value, studentName: "", choice1: "", choice2: ""})}
+                                    className="w-full p-4 bg-white/70 border-2 border-slate-200 rounded-xl outline-none focus:border-amber-500 font-bold transition-all"
+                                    value={form.studentName}
+                                    onChange={(e) => setForm({...form, studentName: e.target.value})}
                                 >
-                                    <option value="">-- בחר/י כיתה --</option>
-                                    {CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
+                                    <option value="">-- בחר/י שם מהרשימה --</option>
+                                    {STUDENTS_BY_CLASS[form.className].map(name => {
+                                        const taken = isNameTaken(name, form.className);
+                                        return <option key={name} value={name} disabled={taken}>{name} {taken ? '(כבר נרשם/ה)' : ''}</option>
+                                    })}
                                 </select>
-
-                                {form.className && (
-                                    <select 
-                                        className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 transition-all font-bold"
-                                        value={form.studentName}
-                                        onChange={(e) => setForm({...form, studentName: e.target.value})}
-                                    >
-                                        <option value="">-- בחר/י שם מהרשימה --</option>
-                                        {STUDENTS_BY_CLASS[form.className].map(name => {
-                                            const taken = isNameTaken(name, form.className);
-                                            return (
-                                                <option key={name} value={name} disabled={taken}>
-                                                    {name} {taken ? '(כבר נרשם/ה)' : ''}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                )}
-                            </div>
+                            )}
                         </div>
 
                         {/* Choices */}
-                        <div className={`bg-white rounded-2xl shadow-sm p-8 space-y-6 transition-all ${!form.studentName ? 'opacity-40 pointer-events-none' : 'border-r-4 border-orange-500'}`}>
-                            <div className="flex items-center gap-2 text-orange-600 font-bold border-b pb-2">
-                                <span>📋 בחירת עדיפויות</span>
-                            </div>
-
-                            <div className="space-y-8">
+                        <div className={`bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 space-y-6 transition-all ${!form.studentName ? 'opacity-40 pointer-events-none scale-95' : 'border-r-4 border-amber-600'}`}>
+                            <p className="text-amber-800 font-bold border-b border-amber-100 pb-2 italic">📋 בחירת עדיפויות (המכסות מתעדכנות בזמן אמת)</p>
+                            
+                            <div className="space-y-6">
                                 <div>
-                                    <p className="text-sm font-bold text-slate-700 mb-3">בחירה ראשונה:</p>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        {CLUBS.map(club => (
-                                            <button
-                                                key={club}
-                                                onClick={() => setForm({...form, choice1: club})}
-                                                className={`px-4 py-3 rounded-xl border-2 transition-all font-bold text-sm ${form.choice1 === club ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-slate-100 text-slate-600 hover:border-indigo-300'}`}
-                                            >
-                                                {club}
-                                            </button>
-                                        ))}
+                                    <p className="text-sm font-bold text-slate-700 mb-3 underline decoration-amber-300 underline-offset-4">עדיפות ראשונה:</p>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {CLUBS_CONFIG.map(club => {
+                                            const status = getClubStatus(club.name);
+                                            return (
+                                                <button
+                                                    key={club.name}
+                                                    disabled={status.isFull}
+                                                    onClick={() => setForm({...form, choice1: club.name})}
+                                                    className={`px-3 py-4 rounded-xl border-2 text-sm font-bold transition-all ${
+                                                        form.choice1 === club.name 
+                                                        ? 'bg-amber-600 border-amber-600 text-white shadow-inner scale-105' 
+                                                        : status.isFull 
+                                                            ? 'bg-slate-200 border-slate-200 text-slate-400 cursor-not-allowed' 
+                                                            : 'bg-white border-slate-200 text-slate-600 hover:border-amber-400'
+                                                    }`}
+                                                >
+                                                    {club.name}
+                                                    <div className="text-[10px] mt-1 opacity-80">
+                                                        {status.isFull ? 'הקורס מלא' : `נותרו ${status.limit - status.count} מקומות`}
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 </div>
 
                                 <div>
-                                    <p className="text-sm font-bold text-slate-700 mb-3">בחירה שנייה:</p>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        {CLUBS.map(club => (
+                                    <p className="text-sm font-bold text-slate-700 mb-3 underline decoration-amber-300 underline-offset-4">עדיפות שנייה:</p>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {CLUBS_CONFIG.map(club => (
                                             <button
-                                                key={club}
-                                                disabled={club === form.choice1}
-                                                onClick={() => setForm({...form, choice2: club})}
-                                                className={`px-4 py-3 rounded-xl border-2 transition-all font-bold text-sm ${
-                                                    form.choice2 === club 
-                                                    ? 'bg-orange-500 border-orange-500 text-white shadow-md' 
-                                                    : club === form.choice1 
+                                                key={club.name + "_2"}
+                                                disabled={club.name === form.choice1}
+                                                onClick={() => setForm({...form, choice2: club.name})}
+                                                className={`px-3 py-3 rounded-xl border-2 text-sm font-bold transition-all ${
+                                                    form.choice2 === club.name 
+                                                    ? 'bg-slate-700 border-slate-700 text-white shadow-md' 
+                                                    : club.name === form.choice1 
                                                         ? 'bg-slate-100 text-slate-300' 
-                                                        : 'bg-white border-slate-100 text-slate-600 hover:border-orange-200'
+                                                        : 'bg-white border-slate-200 text-slate-600 hover:border-amber-300'
                                                 }`}
                                             >
-                                                {club}
+                                                {club.name}
                                             </button>
                                         ))}
                                     </div>
@@ -233,24 +235,15 @@
                             </div>
                         </div>
 
-                        {error && (
-                            <div className="bg-red-50 border-r-4 border-red-500 p-4 text-red-700 flex items-center gap-2 rounded-xl">
-                                <span className="font-bold">⚠️ {error}</span>
-                            </div>
-                        )}
+                        {error && <div className="bg-red-100/90 border-r-4 border-red-500 p-4 text-red-700 font-bold rounded-xl animate-pulse">⚠️ {error}</div>}
 
                         <button
                             onClick={submitForm}
                             disabled={submitting || !form.choice2}
-                            className={`w-full py-6 rounded-2xl text-2xl font-black text-white shadow-xl transition-all ${
-                                submitting || !form.choice2 ? 'bg-slate-300' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'
-                            }`}
+                            className={`w-full py-6 rounded-2xl text-2xl font-black text-white shadow-2xl transition-all ${submitting || !form.choice2 ? 'bg-slate-400' : 'bg-amber-600 hover:bg-amber-700 active:scale-95'}`}
                         >
-                            {submitting ? 'שולח נתונים...' : 'אישור ושליחת הרשמה'}
+                            {submitting ? 'שולח בחירה...' : 'אישור ושליחת נתונים'}
                         </button>
-                        
-                        <p className="text-center text-slate-400 text-xs">המערכת בודקת כפילויות מול קובץ הרישום  </p>
-
                     </div>
                 </div>
             );
@@ -260,5 +253,4 @@
         root.render(<App />);
     </script>
 </body>
-
 </html>
