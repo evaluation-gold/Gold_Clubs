@@ -9,16 +9,16 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700;800&display=swap');
+        @import url('https://photos.app.goo.gl/rqRAaDCzff4hTFAZ8');
         body { 
             font-family: 'Assistant', sans-serif; 
             margin: 0;
             padding: 0;
         }
-        /* הגדרת תמונת הרקע שהועלתה */
-        .bg-custom-image {
-            background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                              url('https://github.com/evaluation-gold/Gold_Clubs/blob/main/gold4.png');
+        /* תמונת רקע עם שכבת כיסוי */
+        .bg-image-overlay {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
+                              url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=2000');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -124,38 +124,38 @@
             };
 
             if (loading) return (
-                <div className="flex h-screen items-center justify-center bg-white/80" dir="rtl">
+                <div className="flex h-screen items-center justify-center bg-indigo-50/80" dir="rtl">
                     <div className="text-center space-y-4">
-                        <div className="w-12 h-12 border-4 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p className="text-amber-900 font-bold italic">מעדכן מכסות קורסים...</p>
+                        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        <p className="text-indigo-800 font-bold">מעדכן מכסות קורסים...</p>
                     </div>
                 </div>
             );
 
             if (success) return (
-                <div className="min-h-screen flex items-center justify-center p-6 bg-custom-image" dir="rtl">
-                    <div className="bg-white/95 backdrop-blur-md p-10 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6 border-b-8 border-green-600">
-                        <div className="text-green-600 text-6xl">✓</div>
+                <div className="min-h-screen flex items-center justify-center p-6 bg-image-overlay" dir="rtl">
+                    <div className="bg-white/95 backdrop-blur-sm p-10 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6 border-b-8 border-green-500">
+                        <div className="text-green-500 text-6xl">✓</div>
                         <h1 className="text-3xl font-black text-slate-800">הרישום בוצע!</h1>
-                        <p className="text-slate-600 text-lg font-bold italic">תודה {form.studentName}, בחירותייך נקלטו במערכת.</p>
+                        <p className="text-slate-600 text-lg font-bold">תודה {form.studentName},<br/>בחירותייך נשמרו בהצלחה.</p>
                     </div>
                 </div>
             );
 
             return (
-                <div className="bg-custom-image py-10 px-4 text-right" dir="rtl">
+                <div className="bg-image-overlay py-10 px-4 text-right" dir="rtl">
                     <div className="max-w-xl mx-auto space-y-6 relative z-10">
                         
-                        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border-t-8 border-amber-600 p-8">
+                        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border-t-8 border-indigo-600 p-8">
                             <h1 className="text-3xl font-black text-slate-800 mb-2">בחירת קורסים - מחצית ב'</h1>
-                            <p className="text-amber-700 font-bold italic">שכבת ז' - נא למלא את עדיפויותייך</p>
+                            <p className="text-indigo-600 font-bold">שכבת ז' - נא למלא את כל השדות</p>
                         </div>
 
                         {/* Student Selection */}
-                        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 space-y-6 border-r-4 border-amber-500">
+                        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 space-y-6 border-r-4 border-blue-500">
                             <p className="font-bold text-slate-700">🎓 פרטים אישיים:</p>
                             <select 
-                                className="w-full p-4 bg-white/70 border-2 border-slate-200 rounded-xl outline-none focus:border-amber-500 font-bold transition-all"
+                                className="w-full p-4 bg-white/50 border-2 border-slate-200 rounded-xl outline-none focus:border-indigo-500 font-bold transition-all"
                                 value={form.className}
                                 onChange={(e) => setForm({className: e.target.value, studentName: "", choice1: "", choice2: ""})}
                             >
@@ -165,7 +165,7 @@
 
                             {form.className && (
                                 <select 
-                                    className="w-full p-4 bg-white/70 border-2 border-slate-200 rounded-xl outline-none focus:border-amber-500 font-bold transition-all"
+                                    className="w-full p-4 bg-white/50 border-2 border-slate-200 rounded-xl outline-none focus:border-indigo-500 font-bold transition-all"
                                     value={form.studentName}
                                     onChange={(e) => setForm({...form, studentName: e.target.value})}
                                 >
@@ -178,13 +178,13 @@
                             )}
                         </div>
 
-                        {/* Choices */}
-                        <div className={`bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 space-y-6 transition-all ${!form.studentName ? 'opacity-40 pointer-events-none scale-95' : 'border-r-4 border-amber-600'}`}>
-                            <p className="text-amber-800 font-bold border-b border-amber-100 pb-2 italic">📋 בחירת עדיפויות (המכסות מתעדכנות בזמן אמת)</p>
+                        {/* Club Choices */}
+                        <div className={`bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 space-y-6 transition-all ${!form.studentName ? 'opacity-40 pointer-events-none scale-95' : 'border-r-4 border-orange-500'}`}>
+                            <p className="text-orange-600 font-bold border-b pb-2">📋 בחירת עדיפויות</p>
                             
                             <div className="space-y-6">
                                 <div>
-                                    <p className="text-sm font-bold text-slate-700 mb-3 underline decoration-amber-300 underline-offset-4">עדיפות ראשונה:</p>
+                                    <p className="text-sm font-bold text-slate-700 mb-3 underline">עדיפות ראשונה (קובעת מקום):</p>
                                     <div className="grid grid-cols-2 gap-2">
                                         {CLUBS_CONFIG.map(club => {
                                             const status = getClubStatus(club.name);
@@ -195,10 +195,10 @@
                                                     onClick={() => setForm({...form, choice1: club.name})}
                                                     className={`px-3 py-4 rounded-xl border-2 text-sm font-bold transition-all ${
                                                         form.choice1 === club.name 
-                                                        ? 'bg-amber-600 border-amber-600 text-white shadow-inner scale-105' 
+                                                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-inner scale-105' 
                                                         : status.isFull 
                                                             ? 'bg-slate-200 border-slate-200 text-slate-400 cursor-not-allowed' 
-                                                            : 'bg-white border-slate-200 text-slate-600 hover:border-amber-400'
+                                                            : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-400'
                                                     }`}
                                                 >
                                                     {club.name}
@@ -212,7 +212,7 @@
                                 </div>
 
                                 <div>
-                                    <p className="text-sm font-bold text-slate-700 mb-3 underline decoration-amber-300 underline-offset-4">עדיפות שנייה:</p>
+                                    <p className="text-sm font-bold text-slate-700 mb-3 underline">עדיפות שנייה:</p>
                                     <div className="grid grid-cols-2 gap-2">
                                         {CLUBS_CONFIG.map(club => (
                                             <button
@@ -221,10 +221,10 @@
                                                 onClick={() => setForm({...form, choice2: club.name})}
                                                 className={`px-3 py-3 rounded-xl border-2 text-sm font-bold transition-all ${
                                                     form.choice2 === club.name 
-                                                    ? 'bg-slate-700 border-slate-700 text-white shadow-md' 
+                                                    ? 'bg-orange-500 border-orange-500 text-white shadow-md' 
                                                     : club.name === form.choice1 
                                                         ? 'bg-slate-100 text-slate-300' 
-                                                        : 'bg-white border-slate-200 text-slate-600 hover:border-amber-300'
+                                                        : 'bg-white border-slate-200 text-slate-600 hover:border-orange-300'
                                                 }`}
                                             >
                                                 {club.name}
@@ -240,9 +240,9 @@
                         <button
                             onClick={submitForm}
                             disabled={submitting || !form.choice2}
-                            className={`w-full py-6 rounded-2xl text-2xl font-black text-white shadow-2xl transition-all ${submitting || !form.choice2 ? 'bg-slate-400' : 'bg-amber-600 hover:bg-amber-700 active:scale-95'}`}
+                            className={`w-full py-6 rounded-2xl text-2xl font-black text-white shadow-2xl transition-all ${submitting || !form.choice2 ? 'bg-slate-400' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'}`}
                         >
-                            {submitting ? 'שולח בחירה...' : 'אישור ושליחת נתונים'}
+                            {submitting ? 'שולח נתונים...' : 'אישור ושליחת בחירה'}
                         </button>
                     </div>
                 </div>
@@ -254,6 +254,3 @@
     </script>
 </body>
 </html>
-
-
-
