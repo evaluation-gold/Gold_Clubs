@@ -330,12 +330,18 @@
                                                     value={form.studentName}
                                                     onChange={(e) => setForm({...form, studentName: e.target.value})}
                                                 >
-                                                    <option value="">בחר/י שם מהרשימה...</option>
-                                                    {STUDENTS_BY_CLASS[form.className].map(name => {
-                                                        const taken = isNameTaken(name, form.className);
-                                                        return <option key={name} value={name} disabled={taken}>{name} {taken ? '— (כבר ביצע רישום)' : ''}</option>
-                                                    })}
-                                                </select>
+                                                    <input 
+    list="students-list" 
+    placeholder="בחר/י או הקלד/י שם..."
+    onChange={(e) => setForm({...form, studentName: e.target.value})}
+/>
+
+<datalist id="students-list">
+    {STUDENTS_BY_CLASS[form.className].map(name => (
+        <option key={name} value={name} />
+    ))}
+</datalist>
+                                                    
                                             </div>
                                         )}
                                     </div>
@@ -434,5 +440,6 @@
     </script>
 </body>
 </html>
+
 
 
