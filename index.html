@@ -193,12 +193,40 @@
               תלמיד/ה יקר/ה, <br />
               פרטי הרישום של <strong>{form.studentName}</strong> (כיתה {form.className}) נקלטו במערכת בית הספר למחצית ב'.
             </p>
+            <button onClick={() => window.location.reload()} className="text-blue-800 font-bold hover:underline">
+              ביצוע רישום נוסף
+            </button>
           </div>
         </div>
       );
 
       return (
-        <div className="page-wrapper text-right" dir="rtl">
+        <div className="page-wrapper text-right" dir="rtl">=
+          {/* Modal הודעת פתיחה */}
+          {showIntro && (
+            <div className="modal-overlay">
+              <div className="official-card max-w-md w-full overflow-hidden animate-in zoom-in duration-300">
+                <div className="blue-accent-bar"></div>
+                <div className="p-8">
+                  <h2 className="text-xl font-black text-blue-900 mb-4">תלמידים והורים יקרים,</h2>
+                  <div className="space-y-4 text-slate-700 leading-relaxed font-semibold">
+                    <p>אנו עתידים לסיים את המחצית הראשונה של שנת הלימודים, שהייתה גדושה בפעילויות חווייתיות, למידה משמעותית ופיתוח קשרים חברתיים.</p>
+                    <p>אתם מתבקשים לבחור את חוג ההעשרה שאתם מעוניינים להתקבל אליו במחצית ב'.</p>
+                    <div className="bg-amber-50 p-3 border-r-4 border-amber-400 text-amber-900 text-sm">
+                      אני מזכירה לכולם, כי תלמידי העתודה המדעית, שבמחצית זו יקבלו פעילויות העשרה משלהם, לא בוחרים חוג.
+                    </div>
+                    <p>אנא עשו בחירה מושכלת ומתאימה.</p>
+                  </div>
+                  <button
+                    onClick={() => setShowIntro(false)}
+                    className="mt-8 w-full py-4 bg-blue-900 text-white font-bold rounded hover:bg-blue-800 transition-colors"
+                  >
+                    הבנתי, למעבר לרישום
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="main-container">
             <header className="mb-8 flex flex-col items-center">
               <h1 className="text-3xl font-black text-blue-900 text-center leading-tight">מקיף עירוני ע"ש גולדווטר אילת</h1>
@@ -243,7 +271,7 @@
                             const taken = isNameTaken(name, form.className);
                             return (
                               <option key={name} value={name} disabled={taken}>
-                                {name} {taken ? "— (כבר בוצע רישום)" : ""}
+                                {name} {taken ? "— (כבר ביצע רישום)" : ""}
                               </option>
                             );
                           })}
@@ -259,7 +287,7 @@
                 <div className="p-8">
                   <div className="step-indicator">
                     <span>2.</span>
-                    <span>בחירת עדיפות ראשונה </span>
+                    <span>בחירת עדיפות ראשונה (חובה) — עם מכסות</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -296,7 +324,7 @@
                 <div className="p-8">
                   <div className="step-indicator">
                     <span>3.</span>
-                    <span>בחירת עדיפות שנייה</span>
+                    <span>בחירת עדיפות שנייה (חובה) — ללא מכסות</span>
                   </div>
                   <p className="text-xs text-slate-500 mb-4">
                     בחירה זו תשמש את הנהלת בית הספר במקרה של שינויים.
@@ -362,4 +390,3 @@
   </script>
 </body>
 </html>
-
