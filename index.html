@@ -1,438 +1,364 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת רישום קורסים - גולדווטר אילת</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap');
-        
-        body { 
-            font-family: 'Assistant', sans-serif; 
-            margin: 0;
-            background-color: #f0f4f8;
-            color: #1e293b;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מערכת רישום קורסים - גולדווטר אילת</title>
 
-        .page-wrapper {
-            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
-            min-height: 100vh;
-        }
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-        .main-container {
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .official-card {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            border-radius: 4px;
-        }
-
-        .blue-accent-bar {
-            height: 6px;
-            background: linear-gradient(to left, #1e3a8a, #3b82f6);
-            border-radius: 4px 4px 0 0;
-        }
-
-        .input-label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #334155;
-            margin-bottom: 6px;
-        }
-
-        .form-select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            background-color: #f8fafc;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-
-        .form-select:focus {
-            border-color: #2563eb;
-            background-color: #fff;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .club-grid-item {
-            border: 1px solid #e2e8f0;
-            padding: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .club-grid-item:hover:not(.full) {
-            border-color: #2563eb;
-            background-color: #eff6ff;
-        }
-
-        .club-grid-item.selected {
-            border-color: #1e3a8a;
-            background-color: #ebf2ff;
-            border-width: 2px;
-        }
-
-        .club-grid-item.full {
-            background-color: #f1f5f9;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .btn-submit {
-            background-color: #1e3a8a;
-            color: white;
-            padding: 18px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            width: 100%;
-            transition: all 0.2s;
-        }
-
-        .btn-submit:hover:not(:disabled) {
-            background-color: #1e40af;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
-        }
-
-        .btn-submit:disabled {
-            background-color: #94a3b8;
-            cursor: not-allowed;
-        }
-
-        .step-indicator {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            color: #1e3a8a;
-            font-weight: 800;
-            font-size: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 12px;
-        }
-
-        /* Modal Overlay */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 23, 42, 0.85);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-            padding: 20px;
-        }
-    </style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap');
+    body { font-family: 'Assistant', sans-serif; margin: 0; background-color: #f0f4f8; color: #1e293b; }
+    .page-wrapper { background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%); min-height: 100vh; }
+    .main-container { max-width: 850px; margin: 0 auto; padding: 40px 20px; }
+    .official-card { background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0,0,0,.05); border-radius: 4px; }
+    .blue-accent-bar { height: 6px; background: linear-gradient(to left, #1e3a8a, #3b82f6); border-radius: 4px 4px 0 0; }
+    .input-label { display:block; font-size:.85rem; font-weight:700; color:#334155; margin-bottom:6px; }
+    .form-select { width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:4px; background:#f8fafc; font-size:.95rem; transition:all .2s; }
+    .form-select:focus { border-color:#2563eb; background:#fff; outline:none; box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+    .club-grid-item { border:1px solid #e2e8f0; padding:16px; border-radius:4px; cursor:pointer; transition:all .2s; position:relative; }
+    .club-grid-item:hover:not(.full) { border-color:#2563eb; background:#eff6ff; }
+    .club-grid-item.selected { border-color:#1e3a8a; background:#ebf2ff; border-width:2px; }
+    .club-grid-item.full { background:#f1f5f9; cursor:not-allowed; opacity:.7; }
+    .btn-submit { background:#1e3a8a; color:#fff; padding:18px; border-radius:4px; font-weight:700; font-size:1.1rem; width:100%; transition:all .2s; }
+    .btn-submit:hover:not(:disabled) { background:#1e40af; box-shadow:0 4px 12px rgba(30,58,138,.25); }
+    .btn-submit:disabled { background:#94a3b8; cursor:not-allowed; }
+    .step-indicator { display:flex; align-items:center; gap:12px; margin-bottom:24px; color:#1e3a8a; font-weight:800; font-size:1rem; border-bottom:1px solid #e2e8f0; padding-bottom:12px; }
+  </style>
 </head>
+
 <body>
-    <div id="root"></div>
+  <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        
-        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-qQWgyIEmfWmP8_COXJl5EZh5J8e76gbDASn-3QTNhhTjxHcKiTnS2sGp1ig2t-Xh/exec";
+  <script type="text/babel">
+    const { useState, useEffect } = React;
 
-        const CLUBS_CONFIG = [
-            { name: "ספורט ימי", limit: 55 },
-            { name: "טניס שולחן", limit: 21 },
-            { name: "התעמלות קרקע", limit: 21 },
-            { name: "בישול קולינרי", limit: 21 },
-            { name: "נפלאות הקנבה", limit: 21 },
-            { name: "השרדות", limit: 21 },
-            { name: "תאטרון/קולנוע", limit: 25 }
-        ];
+    const GOOGLE_SHEET_SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbw-qQWgyIEmfWmP8_COXJl5EZh5J8e76gbDASn-3QTNhhTjxHcKiTnS2sGp1ig2t-Xh/exec";
 
-      const STUDENTS_BY_CLASS = {
-  "ז'2": ["אודנובורצ`נק כריסטינה", "אוחנה אביהו חנניה", "אוחנה דור דוד", "אונו ניקס גאורגי", "אלמלח נהוראי", "אלן דניאל", "ארולקר עילאי", "ארושנוב דניאלה", "ברבי טליה מרים", "גולן טביב אביה", "הוף אפריל אוריה", "וולדליבנוס ארים", "חאמל משה", "חגוס ארסמא", "חיים עמית", "טספגאי מילאט", "כגן נעם ארתור", "כהן רון", "כהן רפאל", "לוי ארמה אחיה", "מיזרוש אדל מדלן", "מרקו זוהר אסתר", "נדר שון", "עדרי ליאן", "פרחומנקו פולינה", "פריימק איליה", "צגאי אלדד", "קהתי יותם", "קרוצ`י יהונתן", "רוט נועם", "שטיינברג ארינה"],
-  "ז'3": ["אגייב תום", "איברהים רטאג`", "אלבז לירוי", "אלימלך אביה אברהם", "אלקיים אמה", "בולקא תומר", "בן הרוש ים דוד", "בן חמו ליאב", "בן שבת טליה", "בניזרי יהונתן אליהו", "גונדא עידו דוד", "גרמי הרמלה", "דינקין אדל", "טספלדט נזראת", "כהנא איתן", "לוי רני", "לוי שלומי דן", "ללביארי מאיה", "מלס אירוסאים", "סאיג סנטיה סילין", "סאלם קמילה", "סבאג סהר דוד", "פיסק אוקסנה", "קדוש גפן", "קוז`יקוב סופיה", "רחמים עילאי חזקיה", "שחרור ליאם", "שצ`רבקוב מריה", "שרעבי אלמה"],
-  "ז'4": ["אהרון שילי", "אייזיק לירוי", "אילוז רותם", "אסייג אוצר", "בר ירדן", "בר עמית", "ברחנה סלינה", "גרובר חרמון אברהם ליאור", "גרזדק גרמה", "דרעי לינוי", "ורדי עופרי", "זגדון שלו שלום", "חיט אלחי חיים", "כהן אוריאן", "כהן מיכאל", "לוי ליאור", "לוי שגב", "מסרי גמליאל תהל", "סויסה רואי", "סולומון רונן", "עטיה אלין נויה", "עמרם יאן", "קובליוב דמיטרי", "רגב אורי עדינו", "שטיין בן זיק תמר", "תבל עילאי", "תדלה אלמוג"],
-  "ז'5": ["אבוטבול דניאל דויד", "אוחנה אליאב מאור", "אולייניק ויקטוריה", "איתי משי", "בוגנים חן חנניה", "בן גיגי ענהאל", "בן שבת אביה", "ברגר אלין", "ברגר ליאן", "גריג גבריאל", "דויטאשוילי בן", "זנו נועם", "ינובסקי איתמר", "לגס סלמא", "לרואינה קולי בנחאמין", "מועלם יהב אסף", "סביסקי לאון", "עמר יהל", "פלדמן דומיניק", "צברי עדה עולם", "צפריר מאיה מרים", "קדאח ספא", "קולצוב כריסטינה", "קושילביץ עידן", "קרן שי לי", "שליו אסף", "שרגורודסקי סמיון"],
-  "ז'8": ["איציק עומר", "אלימיון מנקם", "בהנסי תאליה", "בוריאנוב דוד", "ביסמוט אביהו", "ביצצי דניאלה", "בלס אורי", "בן חמו רז", "ברהאן מהר בתאל", "בשרי ליאם", "הררי אושר", "וילדיגארבריל הרן", "חאמל פריאל דינה", "חסון הילל", "טל אדל לובה", "יפרח ניתאי אליאס", "יקוב רידה", "מזגבו לידיה", "סובוטין דניס", "סובול ויקטוריה", "סולימן הימאן", "סרדצ`וק סולומיה", "עליאן מוסא", "פדורנקו אנסטסיה", "פרייסלר דניאל", "פרץ עתליה", "צ`ייקה אנסטסיה", "קוסובסקי הור לאיה", "קרן נדב", "ראיה יוסף"],
-  "ז'9": ["אגסי עידו", "אלפסי מאי", "בליו ניקול", "בן אהרן שי-לי", "בן סימון אוהד", "ברנובסקי מרטין", "דובין עמנואל", "דיין מיכאלה", "הראל רוני", "זבן ביסאן", "זנו יהלי", "לוי שגב", "לנקרי איתן", "לסרי לירון", "מליקר הדרי", "מלכה נוי", "ממן חושן", "סמוראי ריף", "עמר אלרואי חיים", "צ`דייב קירה", "צפריר ליבי גאולה", "צרפתי רון חיים", "קדושי עומר", "קונשטיין דניס", "רבינוביץ תמר", "רוסיה ליאם", "שוורצמן שיראל", "שחאדה מריה"],
-  "ז'10": ["אבו רמילה גנה", "אוחיון יהונתן", "אחינועם בר", "אלמוג אלין", "אנדמריאם מאיקס", "ארסלן אושר", "גולני אמילי", "גרינשטיין אביטל יבגניה", "דהן עידו", "דהן רומי", "דהן רון", "ודובץ מישל", "יוסף ינאי אליהו", "כהן גל", "כהן דניאל אור", "לוי אדל", "ליאליוק ורוניקה", "ליסיצ`קין אמיליה", "מזרתי נהוראי", "סטגאי אזי", "סטגאי אמנואל", "פדורנקו דמיטרי", "פרוך מגד", "פריסה סיטרין ויטוריה", "קושילביץ אריאל", "קיטשן יואאל", "קרויטורו תהילה", "רגב פלמח דוד", "שופ לאה", "שכטר ים אלמוג"]
-};
+    // ✅ מכסות חלות רק על עדיפות ראשונה (choice1).
+    // ✅ עדיפות שנייה חובה לבחור, אבל "אין מכסות" (לא חוסמים בגלל מכסה).
+    const CLUBS_CONFIG = [
+      { name: "ספורט ימי", limit: 55 },
+      { name: "טניס שולחן", limit: 21 },
+      { name: "התעמלות קרקע", limit: 21 },
+      { name: "בישול קולינרי", limit: 21 },
+      { name: "נפלאות הקנבה", limit: 21 },
+      { name: "השרדות", limit: 21 },
+      { name: "תאטרון/קולנוע", limit: 21 } // אם בפועל 25 - עדכני כאן וגם בסקריפט!
+    ];
 
+    const STUDENTS_BY_CLASS = {
+      "ז'2": ["אדל אוחיון","אדל אילוז","איתי אדרי","איתי חלפון","אליאנה סבג","אלירן אילוז","אריאל דדון","אריאל סוויסה","בתאל מור יוסף","דניאל שוקרון","הודיה ועקנין","טוהר אזולאי","יהונתן חזן","ליאל גואטה","ליאור חזיזה","מאור מויאל","מנור אדרי","נהוראי בן חמו","נועם יפרח","עומר איפרגן","עילי בן חמו","רפאל זריהן","שגיב בן שימול","שקד סרור","תהל ברוך"],
+      "ז'3": ["אביגיל חזיזה","אביחי אלוש","אוהד פרץ","אורי אזולאי","אורי כהן","אוריין אדרי","איילה אברג'ל","איתן כהן","איתן ממן","אלעאי סבג","אריאל דהן","אריאל פחימה","הלל סבג","טוהר עמר","יהונתן מלכה","יהלי איפרגן","ליאל שטרית","מאור שושן","נהוראי בן חמו","נועם מרציאנו","נהוראי קריספין","עילאי בוזגלו","רומי אילוז","רומי מלכה","שירה מלול"],
+      "ז'4": ["אוהד עמר","אוראל דהן","אורי כהן","אורי שושן","איתי מור יוסף","אלעד ממן","אליה אוחנה","אריאל זגורי","דוד כהן","דניאל פחימה","דניאל קדוש","הלל ביטון","טוהר אילוז","טוהר ממן","יהלי פרץ","ליאם אזולאי","ליהיא חזיזה","לירוי אוחיון","מאור בן חמו","מיאל חלפון","נהוראי מויאל","נועם אדרי","נועם בן חמו","נועם כהן","נועם מלכה","נועם סבג","עילאי גואטה","עילאי סרוסי","עמית כהן","רונה אדרי","רועי חזן","רפאל אבוטבול","שביט אדרי","שי סויסה","שליו מור יוסף","תהל אוחיון"],
+      "ז'5": ["אבישג שושן","אדל אוחיון","אדל גואטה","אדל מלול","אוהב איפרגן","אוריין אדרי","אוריין סבג","איילה טובול","איתן דדון","אליה חזן","אלמוג אדרי","אלעאי בן חמו","אריאל עמר","הדר בן חמו","טוהר פרץ","יאיר אדרי","יהלי מויאל","יונתן בן שימול","ליאם ביטון","ליאן ממן","ליאל מלכה","מאור ועקנין","מאור מלכה","נהוראי אוחנה","נהוראי דהן","נוי דהן","נועה בן שימול","עילי אילוז","עמית ממן","רומי זגורי","שון חזיזה","שחר כהן","שילה כהן","תהילה זריהן"],
+      "ז'8": ["אביב אדרי","אביגיל סבג","אדל סבג","אורין קקון","איתי גואטה","איתי מויאל","אליה אלוש","אליה ועקנין","אלעאי אילוז","אריאל איפרגן","אריאל ביטון","אריאל מור יוסף","דניאל אילוז","דניאל חלפון","הדר בן שימול","טוהר דדון","יהונתן שוקרון","ירין אבוטבול","ליאור מלכה","ליאל אוחיון","ליאם אוחיון","ליהיא אדרי","לירז שושן","מאור סויסה","מיאל זריהן","נהוראי שושן","נועם אדרי","נועם אילוז","נועם שושן","עילאי בן חמו","עילי מלכה","עמית זגורי","עמית מלכה","רועי ועקנין","ריף ביטון","רפאל mמן","תהל חזיזה"],
+      "ז'9": ["אביאל חזיזה","אביתר אדרי","אדל אילוז","אדל מור יוסף","אורי מלכה","אורין בן חמו","אורין ממן","אוראל אלוש","איתן ביטון","איתן ועקנין","איתן מלכה","אליה אדרי","אליה פרץ","אלין אוחיון","אלמוג גואטה","אריאל אוחיון","אריאל סבג","הלל מלכה","טוהר אילוז","טוהר ביטון","יהלי דדון","יוסף חיים חזן","ליאל דהן","ליה אברג'ל","לירוי ועקנין","לירן ממן","מאור אוחנה","נהוראי גואטה","נויה דהן","נועם חלפון","עומר כהן","עילי אדרי","עמית כהן","רון חזיזה","שקד בן חמו","תהל אדרי","תהל מויאל"],
+      "ז'10": ["אביאל מלכה","אדל ביטון","אדיר ממן","אורי זריהן","אוריאל סבג","איתמר אדרי","אליה דדון","אלין חלפון","אלעד מויאל","אריאל דהן","הלל אוחיון","יהלי כהן","יונתן חזן","ליאם אוחנה","ליאל אילוז","לירן מרציאנו","מאור ועקנין","נהוראי סוויסה","נועם אלוש","עומר כהן","עמית מלכה","רפאל דהן","שילה חזיזה","תהילה ועקנין"]
+    };
 
+    function App() {
+      const [loading, setLoading] = useState(true);
+      const [registeredData, setRegisteredData] = useState([]);
+      const [clubStats, setClubStats] = useState({});
+      const [submitting, setSubmitting] = useState(false);
+      const [success, setSuccess] = useState(false);
+      const [error, setError] = useState("");
+      const [form, setForm] = useState({ className: "", studentName: "", choice1: "", choice2: "" });
 
-        function App() {
-            const [loading, setLoading] = useState(true);
-            const [showIntro, setShowIntro] = useState(true);
-            const [registeredData, setRegisteredData] = useState([]);
-            const [clubStats, setClubStats] = useState({});
-            const [submitting, setSubmitting] = useState(false);
-            const [success, setSuccess] = useState(false);
-            const [error, setError] = useState("");
-            const [form, setForm] = useState({ className: "", studentName: "", choice1: "", choice2: "" });
+      // ✅ מחזיר גם את הנתונים כדי שנוכל לאמת נקלט/לא נקלט מיד אחרי POST
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          const res = await fetch(GOOGLE_SHEET_SCRIPT_URL);
+          const data = await res.json();
+          setRegisteredData(data);
 
-            const fetchData = async () => {
-                try {
-                    setLoading(true);
-                    const res = await fetch(GOOGLE_SHEET_SCRIPT_URL);
-                    const data = await res.json();
-                    setRegisteredData(data);
-                    
-                    const stats = {};
-                    CLUBS_CONFIG.forEach(c => stats[c.name] = 0);
-                    data.forEach(entry => {
-                        if (entry.choice1 && stats[entry.choice1] !== undefined) {
-                            stats[entry.choice1]++;
-                        }
-                    });
-                    setClubStats(stats);
-                } catch (err) {
-                    console.error("Fetch error:", err);
-                } finally {
-                    setLoading(false);
-                }
-            };
+          const stats = {};
+          CLUBS_CONFIG.forEach(c => stats[c.name] = 0);
+          data.forEach(entry => {
+            if (entry.choice1 && stats[entry.choice1] !== undefined) stats[entry.choice1]++;
+          });
+          setClubStats(stats);
 
-            useEffect(() => { fetchData(); }, []);
+          return data;
+        } catch (err) {
+          console.error("Fetch error:", err);
+          return [];
+        } finally {
+          setLoading(false);
+        }
+      };
 
-            const isNameTaken = (name, className) => {
-                return registeredData.some(s => s.name === name && s.className === className);
-            };
+      useEffect(() => { fetchData(); }, []);
 
-            const getClubStatus = (clubName) => {
-                const config = CLUBS_CONFIG.find(c => c.name === clubName);
-                const count = clubStats[clubName] || 0;
-                const isFull = count >= config.limit;
-                return { count, limit: config.limit, isFull };
-            };
+      const isNameTaken = (name, className) => {
+        return registeredData.some(s => s.name === name && s.className === className);
+      };
 
-            const submitForm = async () => {
-                const status1 = getClubStatus(form.choice1);
-                if (status1.isFull) {
-                    setError(`שים/י לב: המקומות בחוג ${form.choice1} אזלו בזמן מילוי הטופס. אנא בחר/י חוג אחר.`);
-                    fetchData();
-                    return;
-                }
+      const getClubStatus = (clubName, dataOverride = null) => {
+        const config = CLUBS_CONFIG.find(c => c.name === clubName);
+        const limit = config?.limit ?? 0;
 
-                setSubmitting(true);
-                setError("");
-
-                try {
-                    await fetch(GOOGLE_SHEET_SCRIPT_URL, {
-                        method: "POST",
-                        mode: "no-cors",
-                        body: JSON.stringify({ ...form, timestamp: new Date().toLocaleString('he-IL') }),
-                    });
-                    setSuccess(true);
-                } catch (err) {
-                    setError("שגיאת תקשורת. אנא וודא חיבור לאינטרנט ונסה שנית.");
-                } finally {
-                    setSubmitting(false);
-                }
-            };
-
-            if (loading) return (
-                <div className="flex h-screen items-center justify-center bg-white" dir="rtl">
-                    <div className="text-center">
-                        <div className="w-10 h-10 border-4 border-slate-100 border-t-blue-800 rounded-full animate-spin mx-auto mb-4"></div>
-                        <p className="text-blue-900 font-bold">מתחבר למערכת הרישום...</p>
-                    </div>
-                </div>
-            );
-
-            if (success) return (
-                <div className="page-wrapper flex items-center justify-center p-6" dir="rtl">
-                    <div className="official-card p-10 max-w-lg w-full text-center border-t-8 border-blue-900 shadow-2xl">
-                        <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 text-blue-900 rounded-full mb-6">
-                            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                        </div>
-                        <h1 className="text-2xl font-black text-slate-900 mb-4">הרישום בוצע בהצלחה</h1>
-                        <p className="text-slate-600 mb-8 leading-relaxed">
-                            תלמיד/ה יקר/ה, <br/>
-                            פרטי הרישום של <strong>{form.studentName}</strong> (כיתה {form.className}) נקלטו במערכת בית הספר למחצית ב'.
-                        </p>
-                        <button onClick={() => window.location.reload()} className="text-blue-800 font-bold hover:underline">ביצוע רישום נוסף</button>
-                    </div>
-                </div>
-            );
-
-            return (
-                <div className="page-wrapper text-right" dir="rtl">
-                    {/* Modal הודעת פתיחה */}
-                    {showIntro && (
-                        <div className="modal-overlay">
-                            <div className="official-card max-w-md w-full overflow-hidden animate-in zoom-in duration-300">
-                                <div className="blue-accent-bar"></div>
-                                <div className="p-8">
-                                    <h2 className="text-xl font-black text-blue-900 mb-4">תלמידים והורים יקרים,</h2>
-                                    <div className="space-y-4 text-slate-700 leading-relaxed font-semibold">
-                                        <p> אנו עתידים לסיים את המחצית הראשונה של שנת הלימודים, שהייתה גדושה בפעילויות חווייתיות, למידה משמעותית ופיתוח קשרים חברתיים.</p>
-                                        <p> אתם מתבקשים לבחור את חוג ההעשרה שאתם מעוניינים להתקבל אליו במחצית ב'.</p>
-                                        <div className="bg-amber-50 p-3 border-r-4 border-amber-400 text-amber-900 text-sm">
-                                      אני מזכירה לכולם, כי תלמידי העתודה המדעית, שבמחצית זו יקבלו פעילויות העשרה משלהם, לא בוחרים חוג .
-                                        </div>
-                                        <p> אנא עשו בחירה מושכלת ומתאימה.</p>
-                                    </div>
-                                    <button 
-                                        onClick={() => setShowIntro(false)}
-                                        className="mt-8 w-full py-4 bg-blue-900 text-white font-bold rounded hover:bg-blue-800 transition-colors"
-                                    >
-                                        הבנתי, למעבר לרישום
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="main-container">
-                        <header className="mb-8 flex flex-col items-center">
-                            <h1 className="text-3xl font-black text-blue-900 text-center leading-tight">מקיף עירוני ע"ש גולדווטר אילת</h1>
-                            <p className="text-slate-500 font-semibold mt-2 border-b-2 border-blue-100 pb-2">רישום לקורסי בחירה - מחצית ב'</p>
-                        </header>
-
-                        <div className="space-y-6">
-                            {/* שלב 1 */}
-                            <div className="official-card">
-                                <div className="blue-accent-bar"></div>
-                                <div className="p-8">
-                                    <div className="step-indicator">
-                                        <span>1.</span>
-                                        <span>זיהוי תלמיד/ה</span>
-                                    </div>
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <div>
-                                            <label className="input-label">כיתה</label>
-                                            <select 
-                                                className="form-select"
-                                                value={form.className}
-                                                onChange={(e) => setForm({className: e.target.value, studentName: "", choice1: "", choice2: ""})}
-                                            >
-                                                <option value="">בחר/י כיתה...</option>
-                                                {Object.keys(STUDENTS_BY_CLASS).map(c => <option key={c} value={c}>{c}</option>)}
-                                            </select>
-                                        </div>
-
-                                        {form.className && (
-                                            <div className="animate-in fade-in duration-500">
-                                                <label className="input-label">שם התלמיד/ה</label>
-                                                <select 
-                                                    className="form-select"
-                                                    value={form.studentName}
-                                                    onChange={(e) => setForm({...form, studentName: e.target.value})}
-                                                >
-                                                    <option value="">בחר/י שם מהרשימה...</option>
-                                                    {STUDENTS_BY_CLASS[form.className].map(name => (
-                                                        <option key={name} value={name}>{name}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* שלב 2 */}
-                            <div className={`official-card transition-all duration-700 ${!form.studentName ? 'opacity-40 grayscale pointer-events-none' : ''}`}>
-                                <div className="p-8">
-                                    <div className="step-indicator">
-                                        <span>2.</span>
-                                        <span>בחירת עדיפות ראשונה (חובה)</span>
-                                    </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        {CLUBS_CONFIG.map(club => {
-                                            const status = getClubStatus(club.name);
-                                            const isSelected = form.choice1 === club.name;
-                                            return (
-                                                <div
-                                                    key={club.name}
-                                                    onClick={() => !status.isFull && setForm({...form, choice1: club.name, choice2: ""})}
-                                                    className={`club-grid-item ${isSelected ? 'selected' : ''} ${status.isFull ? 'full' : ''}`}
-                                                >
-                                                    <div className="flex justify-between items-start mb-2">
-                                                        <span className="font-bold text-sm text-blue-900">{club.name}</span>
-                                                        {isSelected && <div className="w-4 h-4 bg-blue-800 rounded-full flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full"></div></div>}
-                                                    </div>
-                                                    <div className="text-[11px] font-semibold text-slate-500">
-                                                        {status.isFull ? 'המכסה מלאה' : `נותרו ${status.limit - status.count} מקומות`}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* שלב 3 */}
-                            <div className={`official-card transition-all duration-700 ${!form.choice1 ? 'opacity-40 grayscale pointer-events-none' : ''}`}>
-                                <div className="p-8">
-                                    <div className="step-indicator">
-                                        <span>3.</span>
-                                        <span>בחירת עדיפות שנייה</span>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {CLUBS_CONFIG.map(club => {
-                                            const isSelected = form.choice2 === club.name;
-                                            const isPrimary = form.choice1 === club.name;
-                                            return (
-                                                <button
-                                                    key={club.name + "_2"}
-                                                    disabled={isPrimary}
-                                                    onClick={() => setForm({...form, choice2: club.name})}
-                                                    className={`px-4 py-2 border rounded font-bold text-xs transition-all ${
-                                                        isSelected ? 'bg-blue-900 text-white border-blue-900' : 
-                                                        isPrimary ? 'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed' : 
-                                                        'bg-white text-blue-900 border-blue-200 hover:border-blue-500'
-                                                    }`}
-                                                >
-                                                    {club.name}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {error && (
-                                <div className="p-4 bg-red-50 border-r-4 border-red-600 text-red-700 text-sm font-bold flex items-center gap-2">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
-                                    {error}
-                                </div>
-                            )}
-
-                            <div className="pt-4">
-                                <button
-                                    onClick={submitForm}
-                                    disabled={submitting || !form.choice2}
-                                    className="btn-submit"
-                                >
-                                    {submitting ? 'שולח נתונים למערכת...' : 'אישור ושליחת טופס רישום'}
-                                </button>
-                                <div className="flex justify-between items-center mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-widest px-2">
-                                    <span>גולדווטר אילת • תשפ"ו</span>
-                                    <span>מערכת רישום פנימית</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
+        // אם מעבירים dataOverride - מחשב סטטוס על בסיס נתונים טריים
+        if (Array.isArray(dataOverride)) {
+          const count = dataOverride.filter(x => x.choice1 === clubName).length;
+          return { count, limit, isFull: count >= limit };
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+        const count = clubStats[clubName] || 0;
+        return { count, limit, isFull: count >= limit };
+      };
+
+      const submitForm = async () => {
+        setError("");
+
+        // ✅ עדיפות שנייה חובה
+        if (!form.className || !form.studentName || !form.choice1 || !form.choice2) {
+          setError("אנא מלא/י כיתה, שם תלמיד/ה, עדיפות ראשונה ושנייה.");
+          return;
+        }
+
+        setSubmitting(true);
+
+        try {
+          // 1) בדיקה טרייה ממש לפני שליחה: כפילות + מכסה ל-choice1 בלבד
+          const latestBefore = await fetchData();
+
+          // כפילות
+          const duplicate = latestBefore.some(s => s.name === form.studentName && s.className === form.className);
+          if (duplicate) {
+            setError("כבר קיים רישום עבור תלמיד/ה זה/זו בכיתה שנבחרה.");
+            setSubmitting(false);
+            return;
+          }
+
+          // מכסה - רק לעדיפות ראשונה
+          const status1 = getClubStatus(form.choice1, latestBefore);
+          if (status1.isFull) {
+            setError(`שים/י לב: המקומות בחוג "${form.choice1}" אזלו. אנא בחר/י חוג אחר לעדיפות הראשונה.`);
+            setSubmitting(false);
+            return;
+          }
+
+          // 2) שליחה (choice2 חובה אבל בלי מכסות)
+          await fetch(GOOGLE_SHEET_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify({ ...form, timestamp: new Date().toLocaleString('he-IL') }),
+          });
+
+          // 3) אימות אחרי שליחה: אם לא נקלט - לא מציגים הצלחה
+          const latestAfter = await fetchData();
+          const existsNow = latestAfter.some(s => s.name === form.studentName && s.className === form.className);
+
+          if (existsNow) {
+            setSuccess(true);
+          } else {
+            setError("הרישום לא נקלט (ייתכן כפילות/מכסה התמלאה בדיוק כעת). אנא רעננו ונסו שוב.");
+          }
+
+        } catch (err) {
+          console.error(err);
+          setError("שגיאת תקשורת. אנא וודא/י חיבור לאינטרנט ונסה/י שנית.");
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      if (loading) return (
+        <div className="flex h-screen items-center justify-center bg-white" dir="rtl">
+          <div className="text-center">
+            <div className="w-10 h-10 border-4 border-slate-100 border-t-blue-800 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-blue-900 font-bold">מתחבר למערכת הרישום...</p>
+          </div>
+        </div>
+      );
+
+      if (success) return (
+        <div className="page-wrapper flex items-center justify-center p-6" dir="rtl">
+          <div className="official-card p-10 max-w-lg w-full text-center border-t-8 border-blue-900 shadow-2xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 text-blue-900 rounded-full mb-6">
+              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <h1 className="text-2xl font-black text-slate-900 mb-4">הרישום בוצע בהצלחה</h1>
+            <p className="text-slate-600 mb-8 leading-relaxed">
+              תלמיד/ה יקר/ה, <br />
+              פרטי הרישום של <strong>{form.studentName}</strong> (כיתה {form.className}) נקלטו במערכת בית הספר למחצית ב'.
+            </p>
+          </div>
+        </div>
+      );
+
+      return (
+        <div className="page-wrapper text-right" dir="rtl">
+          <div className="main-container">
+            <header className="mb-8 flex flex-col items-center">
+              <h1 className="text-3xl font-black text-blue-900 text-center leading-tight">מקיף עירוני ע"ש גולדווטר אילת</h1>
+              <p className="text-slate-500 font-semibold mt-2 border-b-2 border-blue-100 pb-2">רישום לקורסי בחירה - מחצית ב'</p>
+            </header>
+
+            <div className="space-y-6">
+              {/* שלב 1 */}
+              <div className="official-card">
+                <div className="blue-accent-bar"></div>
+                <div className="p-8">
+                  <div className="step-indicator">
+                    <span>1.</span>
+                    <span>זיהוי תלמיד/ה</span>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="input-label">כיתה</label>
+                      <select
+                        className="form-select"
+                        value={form.className}
+                        onChange={(e) => setForm({ className: e.target.value, studentName: "", choice1: "", choice2: "" })}
+                      >
+                        <option value="">בחר/י כיתה...</option>
+                        {Object.keys(STUDENTS_BY_CLASS).map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {form.className && (
+                      <div className="animate-in fade-in duration-500">
+                        <label className="input-label">שם התלמיד/ה</label>
+                        <select
+                          className="form-select"
+                          value={form.studentName}
+                          onChange={(e) => setForm({ ...form, studentName: e.target.value })}
+                        >
+                          <option value="">בחר/י שם מהרשימה...</option>
+                          {STUDENTS_BY_CLASS[form.className].map(name => {
+                            const taken = isNameTaken(name, form.className);
+                            return (
+                              <option key={name} value={name} disabled={taken}>
+                                {name} {taken ? "— (כבר בוצע רישום)" : ""}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* שלב 2 */}
+              <div className={`official-card transition-all duration-700 ${!form.studentName ? "opacity-40 grayscale pointer-events-none" : ""}`}>
+                <div className="p-8">
+                  <div className="step-indicator">
+                    <span>2.</span>
+                    <span>בחירת עדיפות ראשונה </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {CLUBS_CONFIG.map(club => {
+                      const status = getClubStatus(club.name);
+                      const isSelected = form.choice1 === club.name;
+
+                      return (
+                        <div
+                          key={club.name}
+                          onClick={() => !status.isFull && setForm({ ...form, choice1: club.name, choice2: "" })}
+                          className={`club-grid-item ${isSelected ? "selected" : ""} ${status.isFull ? "full" : ""}`}
+                        >
+                          <div className="flex justify-between items-start mb-2">
+                            <span className="font-bold text-sm text-blue-900">{club.name}</span>
+                            {isSelected && (
+                              <div className="w-4 h-4 bg-blue-800 rounded-full flex items-center justify-center">
+                                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-[11px] font-semibold text-slate-500">
+                            {status.isFull ? "המכסה מלאה" : `נותרו ${status.limit - status.count} מקומות`}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* שלב 3 */}
+              <div className={`official-card transition-all duration-700 ${!form.choice1 ? "opacity-40 grayscale pointer-events-none" : ""}`}>
+                <div className="p-8">
+                  <div className="step-indicator">
+                    <span>3.</span>
+                    <span>בחירת עדיפות שנייה</span>
+                  </div>
+                  <p className="text-xs text-slate-500 mb-4">
+                    בחירה זו תשמש את הנהלת בית הספר במקרה של שינויים.
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {CLUBS_CONFIG.map(club => {
+                      const isSelected = form.choice2 === club.name;
+                      const isPrimary = form.choice1 === club.name;
+
+                      return (
+                        <button
+                          key={club.name + "_2"}
+                          disabled={isPrimary}
+                          onClick={() => setForm({ ...form, choice2: club.name })}
+                          className={`px-4 py-2 border rounded font-bold text-xs transition-all ${
+                            isSelected
+                              ? "bg-blue-900 text-white border-blue-900"
+                              : isPrimary
+                              ? "bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed"
+                              : "bg-white text-blue-900 border-blue-200 hover:border-blue-500"
+                          }`}
+                        >
+                          {club.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {error && (
+                <div className="p-4 bg-red-50 border-r-4 border-red-600 text-red-700 text-sm font-bold flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path>
+                  </svg>
+                  {error}
+                </div>
+              )}
+
+              <div className="pt-4">
+                <button
+                  onClick={submitForm}
+                  disabled={submitting || !form.className || !form.studentName || !form.choice1 || !form.choice2}
+                  className="btn-submit"
+                >
+                  {submitting ? "שולח נתונים למערכת..." : "אישור ושליחת טופס רישום"}
+                </button>
+
+                <div className="flex justify-between items-center mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-widest px-2">
+                  <span>גולדווטר אילת • תשפ"ו</span>
+                  <span>מערכת רישום פנימית</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
 </body>
 </html>
-
