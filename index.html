@@ -12,22 +12,137 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap');
-    body { font-family: 'Assistant', sans-serif; margin: 0; background-color: #f0f4f8; color: #1e293b; }
-    .page-wrapper { background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%); min-height: 100vh; }
-    .main-container { max-width: 850px; margin: 0 auto; padding: 40px 20px; }
-    .official-card { background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px -5px rgba(0,0,0,.05); border-radius: 4px; }
-    .blue-accent-bar { height: 6px; background: linear-gradient(to left, #1e3a8a, #3b82f6); border-radius: 4px 4px 0 0; }
-    .input-label { display:block; font-size:.85rem; font-weight:700; color:#334155; margin-bottom:6px; }
-    .form-select { width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:4px; background:#f8fafc; font-size:.95rem; transition:all .2s; }
-    .form-select:focus { border-color:#2563eb; background:#fff; outline:none; box-shadow:0 0 0 3px rgba(37,99,235,.1); }
-    .club-grid-item { border:1px solid #e2e8f0; padding:16px; border-radius:4px; cursor:pointer; transition:all .2s; position:relative; }
-    .club-grid-item:hover:not(.full) { border-color:#2563eb; background:#eff6ff; }
-    .club-grid-item.selected { border-color:#1e3a8a; background:#ebf2ff; border-width:2px; }
-    .club-grid-item.full { background:#f1f5f9; cursor:not-allowed; opacity:.7; }
-    .btn-submit { background:#1e3a8a; color:#fff; padding:18px; border-radius:4px; font-weight:700; font-size:1.1rem; width:100%; transition:all .2s; }
-    .btn-submit:hover:not(:disabled) { background:#1e40af; box-shadow:0 4px 12px rgba(30,58,138,.25); }
-    .btn-submit:disabled { background:#94a3b8; cursor:not-allowed; }
-    .step-indicator { display:flex; align-items:center; gap:12px; margin-bottom:24px; color:#1e3a8a; font-weight:800; font-size:1rem; border-bottom:1px solid #e2e8f0; padding-bottom:12px; }
+
+    body {
+      font-family: 'Assistant', sans-serif;
+      margin: 0;
+      background-color: #f0f4f8;
+      color: #1e293b;
+    }
+
+    .page-wrapper {
+      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+      min-height: 100vh;
+    }
+
+    .main-container {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .official-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+    }
+
+    .blue-accent-bar {
+      height: 6px;
+      background: linear-gradient(to left, #1e3a8a, #3b82f6);
+      border-radius: 4px 4px 0 0;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background-color: #f8fafc;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .form-select:focus {
+      border-color: #2563eb;
+      background-color: #fff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .club-grid-item {
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .club-grid-item:hover:not(.full) {
+      border-color: #2563eb;
+      background-color: #eff6ff;
+    }
+
+    .club-grid-item.selected {
+      border-color: #1e3a8a;
+      background-color: #ebf2ff;
+      border-width: 2px;
+    }
+
+    .club-grid-item.full {
+      background-color: #f1f5f9;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .btn-submit {
+      background-color: #1e3a8a;
+      color: white;
+      padding: 18px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background-color: #1e40af;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+    }
+
+    .btn-submit:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      color: #1e3a8a;
+      font-weight: 800;
+      font-size: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+    }
+
+    /* ✅ Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+      padding: 20px;
+    }
   </style>
 </head>
 
@@ -40,8 +155,8 @@
     const GOOGLE_SHEET_SCRIPT_URL =
       "https://script.google.com/macros/s/AKfycbxirvteBsKEGLjYqm4fQ1KO5eoe5uqLrhHGeSU7iPDha3QEDewXxBO2suG3GydkTSd9/exec";
 
-    // ✅ מכסות חלות רק על עדיפות ראשונה (choice1).
-    // ✅ עדיפות שנייה חובה לבחור, אבל "אין מכסות" (לא חוסמים בגלל מכסה).
+    // ✅ מכסות חלות על עדיפות ראשונה בלבד (choice1)
+    // ✅ עדיפות שנייה חובה (choice2) אבל ללא מכסות
     const CLUBS_CONFIG = [
       { name: "ספורט ימי", limit: 55 },
       { name: "טניס שולחן", limit: 21 },
@@ -49,9 +164,10 @@
       { name: "בישול קולינרי", limit: 21 },
       { name: "נפלאות הקנבה", limit: 21 },
       { name: "השרדות", limit: 21 },
-      { name: "תאטרון/קולנוע", limit: 21 } // אם בפועל 25 - עדכני כאן וגם בסקריפט!
+      { name: "תאטרון/קולנוע", limit: 21 } // אם בפועל 25 - עדכני גם פה וגם בסקריפט
     ];
 
+    // ⚠️ השארתי את הרשימות שלך בדיוק כמו שהן (לא שיניתי שמות)
     const STUDENTS_BY_CLASS = {
       "ז'2": ["אדל אוחיון","אדל אילוז","איתי אדרי","איתי חלפון","אליאנה סבג","אלירן אילוז","אריאל דדון","אריאל סוויסה","בתאל מור יוסף","דניאל שוקרון","הודיה ועקנין","טוהר אזולאי","יהונתן חזן","ליאל גואטה","ליאור חזיזה","מאור מויאל","מנור אדרי","נהוראי בן חמו","נועם יפרח","עומר איפרגן","עילי בן חמו","רפאל זריהן","שגיב בן שימול","שקד סרור","תהל ברוך"],
       "ז'3": ["אביגיל חזיזה","אביחי אלוש","אוהד פרץ","אורי אזולאי","אורי כהן","אוריין אדרי","איילה אברג'ל","איתן כהן","איתן ממן","אלעאי סבג","אריאל דהן","אריאל פחימה","הלל סבג","טוהר עמר","יהונתן מלכה","יהלי איפרגן","ליאל שטרית","מאור שושן","נהוראי בן חמו","נועם מרציאנו","נהוראי קריספין","עילאי בוזגלו","רומי אילוז","רומי מלכה","שירה מלול"],
@@ -64,6 +180,10 @@
 
     function App() {
       const [loading, setLoading] = useState(true);
+
+      // ✅ מודאל פתיחה
+      const [showIntro, setShowIntro] = useState(true);
+
       const [registeredData, setRegisteredData] = useState([]);
       const [clubStats, setClubStats] = useState({});
       const [submitting, setSubmitting] = useState(false);
@@ -71,7 +191,7 @@
       const [error, setError] = useState("");
       const [form, setForm] = useState({ className: "", studentName: "", choice1: "", choice2: "" });
 
-      // ✅ מחזיר גם את הנתונים כדי שנוכל לאמת נקלט/לא נקלט מיד אחרי POST
+      // ✅ fetch שמחזיר גם data כדי לאמת אחרי שליחה
       const fetchData = async () => {
         try {
           setLoading(true);
@@ -80,7 +200,7 @@
           setRegisteredData(data);
 
           const stats = {};
-          CLUBS_CONFIG.forEach(c => stats[c.name] = 0);
+          CLUBS_CONFIG.forEach(c => (stats[c.name] = 0));
           data.forEach(entry => {
             if (entry.choice1 && stats[entry.choice1] !== undefined) stats[entry.choice1]++;
           });
@@ -101,11 +221,11 @@
         return registeredData.some(s => s.name === name && s.className === className);
       };
 
+      // status על בסיס clubStats (למסך), או על בסיס data טרי אם מעבירים dataOverride
       const getClubStatus = (clubName, dataOverride = null) => {
         const config = CLUBS_CONFIG.find(c => c.name === clubName);
         const limit = config?.limit ?? 0;
 
-        // אם מעבירים dataOverride - מחשב סטטוס על בסיס נתונים טריים
         if (Array.isArray(dataOverride)) {
           const count = dataOverride.filter(x => x.choice1 === clubName).length;
           return { count, limit, isFull: count >= limit };
@@ -118,7 +238,7 @@
       const submitForm = async () => {
         setError("");
 
-        // ✅ עדיפות שנייה חובה
+        // ✅ עדיפות שנייה חובה, אבל ללא מכסות
         if (!form.className || !form.studentName || !form.choice1 || !form.choice2) {
           setError("אנא מלא/י כיתה, שם תלמיד/ה, עדיפות ראשונה ושנייה.");
           return;
@@ -127,10 +247,9 @@
         setSubmitting(true);
 
         try {
-          // 1) בדיקה טרייה ממש לפני שליחה: כפילות + מכסה ל-choice1 בלבד
+          // 1) בדיקה טרייה לפני שליחה: כפילות + מכסה ל-choice1 בלבד
           const latestBefore = await fetchData();
 
-          // כפילות
           const duplicate = latestBefore.some(s => s.name === form.studentName && s.className === form.className);
           if (duplicate) {
             setError("כבר קיים רישום עבור תלמיד/ה זה/זו בכיתה שנבחרה.");
@@ -138,19 +257,18 @@
             return;
           }
 
-          // מכסה - רק לעדיפות ראשונה
           const status1 = getClubStatus(form.choice1, latestBefore);
           if (status1.isFull) {
-            setError(`שים/י לב: המקומות בחוג "${form.choice1}" אזלו. אנא בחר/י חוג אחר לעדיפות הראשונה.`);
+            setError(`שים/י לב: המכסה של החוג "${form.choice1}" מלאה. אנא בחר/י חוג אחר לעדיפות הראשונה.`);
             setSubmitting(false);
             return;
           }
 
-          // 2) שליחה (choice2 חובה אבל בלי מכסות)
+          // 2) שליחה (no-cors)
           await fetch(GOOGLE_SHEET_SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
-            body: JSON.stringify({ ...form, timestamp: new Date().toLocaleString('he-IL') }),
+            body: JSON.stringify({ ...form, timestamp: new Date().toLocaleString("he-IL") })
           });
 
           // 3) אימות אחרי שליחה: אם לא נקלט - לא מציגים הצלחה
@@ -160,9 +278,8 @@
           if (existsNow) {
             setSuccess(true);
           } else {
-            setError("הרישום לא נקלט (ייתכן כפילות/מכסה התמלאה בדיוק כעת). אנא רעננו ונסו שוב.");
+            setError("הרישום לא נקלט (ייתכן כפילות/המכסה התמלאה בדיוק כעת). אנא רעננו ונסו שוב.");
           }
-
         } catch (err) {
           console.error(err);
           setError("שגיאת תקשורת. אנא וודא/י חיבור לאינטרנט ונסה/י שנית.");
@@ -190,22 +307,20 @@
             </div>
             <h1 className="text-2xl font-black text-slate-900 mb-4">הרישום בוצע בהצלחה</h1>
             <p className="text-slate-600 mb-8 leading-relaxed">
-              תלמיד/ה יקר/ה, <br />
+              תלמיד/ה יקר/ה,<br />
               פרטי הרישום של <strong>{form.studentName}</strong> (כיתה {form.className}) נקלטו במערכת בית הספר למחצית ב'.
             </p>
-            <button onClick={() => window.location.reload()} className="text-blue-800 font-bold hover:underline">
-              ביצוע רישום נוסף
-            </button>
           </div>
         </div>
       );
 
       return (
-        <div className="page-wrapper text-right" dir="rtl">=
-          {/* Modal הודעת פתיחה */}
+        <div className="page-wrapper text-right" dir="rtl">
+
+          {/* ✅ Modal הודעת פתיחה */}
           {showIntro && (
             <div className="modal-overlay">
-              <div className="official-card max-w-md w-full overflow-hidden animate-in zoom-in duration-300">
+              <div className="official-card max-w-md w-full overflow-hidden">
                 <div className="blue-accent-bar"></div>
                 <div className="p-8">
                   <h2 className="text-xl font-black text-blue-900 mb-4">תלמידים והורים יקרים,</h2>
@@ -227,6 +342,7 @@
               </div>
             </div>
           )}
+
           <div className="main-container">
             <header className="mb-8 flex flex-col items-center">
               <h1 className="text-3xl font-black text-blue-900 text-center leading-tight">מקיף עירוני ע"ש גולדווטר אילת</h1>
@@ -259,7 +375,7 @@
                     </div>
 
                     {form.className && (
-                      <div className="animate-in fade-in duration-500">
+                      <div>
                         <label className="input-label">שם התלמיד/ה</label>
                         <select
                           className="form-select"
@@ -282,7 +398,7 @@
                 </div>
               </div>
 
-              {/* שלב 2 */}
+              {/* שלב 2 - עדיפות ראשונה עם מכסות */}
               <div className={`official-card transition-all duration-700 ${!form.studentName ? "opacity-40 grayscale pointer-events-none" : ""}`}>
                 <div className="p-8">
                   <div className="step-indicator">
@@ -319,13 +435,14 @@
                 </div>
               </div>
 
-              {/* שלב 3 */}
+              {/* שלב 3 - עדיפות שנייה חובה, ללא מכסות */}
               <div className={`official-card transition-all duration-700 ${!form.choice1 ? "opacity-40 grayscale pointer-events-none" : ""}`}>
                 <div className="p-8">
                   <div className="step-indicator">
                     <span>3.</span>
                     <span>בחירת עדיפות שנייה (חובה) — ללא מכסות</span>
                   </div>
+
                   <p className="text-xs text-slate-500 mb-4">
                     בחירה זו תשמש את הנהלת בית הספר במקרה של שינויים.
                   </p>
